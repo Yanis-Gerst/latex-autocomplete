@@ -1,19 +1,17 @@
 # LaTeX Auto-Completion Plugin
 
-This is a simple plugin that provides LaTeX auto-completion.
+This plugin will a very simple of way autocompletion feature for your LaTeX commands.
 
-This plugin is designed to offer a great user experience with its simplicity.
+To use it juste type "\\" follow by your command and you will see suggestions
 
-![Video](video_link_here)
+![Demo](./docs/latex-autocomplete-plugin-ezgif.com-video-to-gif-converter.gif)
 
 ## Features
 
--   Provides LaTeX auto-completion.
+- Provides LaTeX auto-completion.
 
 > Do you have a nice feature to suggest? Please open a GitHub issue.
 
 ## Features in Progress
 
--   Triggers only in LaTeX context without significant performance overhead.
--   Adds shortcuts like "\a/b" -> \frac{a}{b}.
--   Allows users to create custom shortcuts.
+- Adds shortcuts like "\a/b" -> \frac{a}{b}.

@@ -1,4 +1,4 @@
-import matchCommand from "matchCommand";
+import matchCommand from "../data/mathLatexCommand";
 import {
 	App,
 	Editor,
@@ -9,6 +9,10 @@ import {
 	TFile,
 } from "obsidian";
 export type Suggestion = string | { displayName: string; replacement: string };
+
+const LATEX_TRIGGER_PATTERN = /\\..*/;
+const WORD_DELIMITER = " ";
+const CSS_SUGGESTION_ITEM_CLASS = "latex-autocompletion-suggestion-item";
 
 export class LatexSuggestion extends EditorSuggest<string> {
 	constructor(app: App) {
@@ -28,7 +32,7 @@ export class LatexSuggestion extends EditorSuggest<string> {
 			cursor.ch
 		);
 
-		const wordMatch = wordBeforeCursor.match(/\\..*/);
+		const wordMatch = wordBeforeCursor.match(LATEX_TRIGGER_PATTERN);
 		if (!wordMatch) return null;
 		const query = wordMatch[0];
 
@@ -59,7 +63,7 @@ export class LatexSuggestion extends EditorSuggest<string> {
 	}
 
 	renderSuggestion(value: string, el: HTMLElement): void {
-		el.addClass("latex-autocompletion-suggestion-item");
+		el.addClass(CSS_SUGGESTION_ITEM_CLASS);
 		el.setText(value);
 	}
 }
@@ -67,7 +71,7 @@ export class LatexSuggestion extends EditorSuggest<string> {
 const getWordBeforePosition = (cursor: EditorPosition, editor: Editor) => {
 	let char = "";
 	let counter = -1;
-	while (char !== " " && cursor.ch - counter > 0) {
+	while (char !== WORD_DELIMITER && cursor.ch - counter > 0) {
 		counter++;
 		char = editor.getRange(
 			{ ...cursor, ch: cursor.ch - counter },
@@ -75,7 +79,7 @@ const getWordBeforePosition = (cursor: EditorPosition, editor: Editor) => {
 		)[0];
 	}
 
-	if (char == " ") counter--;
+	if (char == WORD_DELIMITER) counter--;
 	return {
 		...cursor,
 		ch: cursor.ch - counter,
