@@ -1,7 +1,7 @@
 {
   "id": "latex-autocomplete",
   "name": "LaTeX autocomplete",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minAppVersion": "1.0.0",
   "description": "Simple auto-completion for LaTeX. As simple as typing '\\'.",
   "author": "Gerst Yanis",
