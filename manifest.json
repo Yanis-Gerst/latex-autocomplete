@@ -3,7 +3,7 @@
 	"name": "LaTeX autocomplete",
 	"version": "1.0.1",
 	"minAppVersion": "1.0.0",
-	"description": "Simple auto-completion for LaTeX. As simple as typing '\\'",
+	"description": "Simple auto-completion for LaTeX. As simple as typing '\\'.",
 	"author": "Gerst Yanis",
 	"authorUrl": "https://github.com/Yanis-Gerst",
 	"isDesktopOnly": false
