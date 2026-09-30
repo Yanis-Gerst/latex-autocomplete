@@ -15,8 +15,19 @@ const WORD_DELIMITER = " ";
 const CSS_SUGGESTION_ITEM_CLASS = "latex-autocompletion-suggestion-item";
 
 export class LatexSuggestion extends EditorSuggest<string> {
+	private currentSuggestions: string[] = [];
+
 	constructor(app: App) {
 		super(app);
+
+		this.scope.register([], "Tab", (evt) => {
+			if (!this.context) return true;
+			const bestSuggestion = this.currentSuggestions[0];
+			if (!bestSuggestion) return true;
+
+			this.selectSuggestion(bestSuggestion, evt);
+			return false;
+		});
 	}
 
 	onTrigger(
@@ -33,7 +44,10 @@ export class LatexSuggestion extends EditorSuggest<string> {
 		);
 
 		const wordMatch = wordBeforeCursor.match(LATEX_TRIGGER_PATTERN);
-		if (!wordMatch) return null;
+		if (!wordMatch) {
+			this.currentSuggestions = [];
+			return null;
+		}
 		const query = wordMatch[0];
 
 		return {
@@ -47,9 +61,11 @@ export class LatexSuggestion extends EditorSuggest<string> {
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] {
-		return matchCommand.filter((latexCommand) =>
+		// TODO: Better match engine by using Leipstein Distance with tree discovery(for performance)
+		this.currentSuggestions = matchCommand.filter((latexCommand) =>
 			latexCommand.contains(context.query)
 		);
+		return this.currentSuggestions;
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
@@ -65,6 +81,11 @@ export class LatexSuggestion extends EditorSuggest<string> {
 	renderSuggestion(value: string, el: HTMLElement): void {
 		el.addClass(CSS_SUGGESTION_ITEM_CLASS);
 		el.setText(value);
+	}
+
+	close(): void {
+		this.currentSuggestions = [];
+		super.close();
 	}
 }
 

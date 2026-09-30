@@ -9,9 +9,10 @@ To use it juste type "\\" follow by your command and you will see suggestions
 ## Features
 
 - Provides LaTeX auto-completion.
+- Auto-completion using Tab
 
 > Do you have a nice feature to suggest? Please open a GitHub issue.
 
 ## Features in Progress
 
-- Adds shortcuts like "\a/b" -> \frac{a}{b}.
+- Better suggestions 
