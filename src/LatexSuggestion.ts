@@ -61,11 +61,62 @@ export class LatexSuggestion extends EditorSuggest<string> {
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] {
-		// TODO: Better match engine by using Leipstein Distance with tree discovery(for performance)
-		this.currentSuggestions = matchCommand.filter((latexCommand) =>
-			latexCommand.contains(context.query)
-		);
+		const normalizedQuery = context.query.replace(/^\\/, "").toLowerCase();
+		if (normalizedQuery.length === 0) return [];
+
+		this.currentSuggestions = matchCommand
+			.map((cmd) => {
+				const normalizedCmd = cmd.toLowerCase().startsWith('\\') 
+					? cmd.toLowerCase().slice(1) 
+					: cmd.toLowerCase();
+
+				return {
+					command: cmd,
+					score: this.#getAutocompleteScore(normalizedCmd, normalizedQuery),
+				};
+			})
+			.filter((item) => item.score > 0)
+			.sort((a, b) => {
+				if (b.score !== a.score) return b.score - a.score;
+				return a.command.length - b.command.length;
+			})
+			.map((item) => item.command);
+
 		return this.currentSuggestions;
+	}
+
+	#getAutocompleteScore(command:string , query: string) {
+		let maxScore = -1; 
+		for (let i=0; i < command.length; i++) {
+			if (command[i] === query[0]) {
+				const score = this.#getSliceScore(command, query, i);
+				if (score > maxScore) maxScore = score;
+			}
+		}
+		return maxScore;
+	}
+
+	#getSliceScore(command: string, query: string, startMatchIndex: number) {
+		let score = startMatchIndex == 0 ? 20 : 10;
+		let queryIndex = 1;
+		let commandIndex = startMatchIndex + 1;
+		let prevMatch = true;
+		while (commandIndex < command.length && queryIndex < query.length) {
+			if (command[commandIndex] === query[queryIndex]) {
+				score += prevMatch ? 15 : 10;
+				prevMatch = true;
+				queryIndex++;
+			} else {
+				prevMatch = false;
+			}
+			commandIndex++;
+		}
+
+		if (queryIndex < query.length) {
+			return -1;
+		}
+		score -= (command.length - query.length);
+		return score;
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
