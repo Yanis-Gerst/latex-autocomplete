@@ -99,6 +99,7 @@ export class LatexSuggestion extends EditorSuggest<string> {
 	#getSliceScore(command: string, query: string, startMatchIndex: number) {
 		let score = startMatchIndex == 0 ? 20 : 10;
 		let queryIndex = 1;
+		let typoIndex = queryIndex;
 		let commandIndex = startMatchIndex + 1;
 		let prevMatch = true;
 		while (commandIndex < command.length && queryIndex < query.length) {
@@ -106,13 +107,18 @@ export class LatexSuggestion extends EditorSuggest<string> {
 				score += prevMatch ? 15 : 10;
 				prevMatch = true;
 				queryIndex++;
+			} else if (command[commandIndex] === query[queryIndex+1]) {
+				queryIndex+=2;
+				score += 10;
+				prevMatch = true;
 			} else {
 				prevMatch = false;
 			}
 			commandIndex++;
 		}
 
-		if (queryIndex < query.length) {
+		const remaning = query.length - queryIndex;
+		if (remaning > 2) {
 			return -1;
 		}
 		score -= (command.length - query.length);
