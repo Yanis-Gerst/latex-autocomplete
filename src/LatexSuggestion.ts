@@ -62,7 +62,7 @@ export class LatexSuggestion extends EditorSuggest<string> {
 
 	getSuggestions(context: EditorSuggestContext): string[] {
 		const normalizedQuery = context.query.replace(/^\\/, "").toLowerCase();
-		if (normalizedQuery.length === 0) return [];
+		if (normalizedQuery.length < 1) return [];
 
 		this.currentSuggestions = matchCommand
 			.map((cmd) => {
